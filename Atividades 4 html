@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pokedex - Favoritos</title>
+
+    <link rel="stylesheet" href="atividade4.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Minha Pokédex</h1>
+
+        <p>Pokémon com cache e favoritos</p>
+
+        <button id="mostrarTodos">Todos os Pokémon</button>
+
+        <button id="mostrarFavoritos">Meus Favoritos</button>
+
+        <p id="status">Aguardando...</p>
+
+        <div id="resultado" class="lista"></div>
+
+    </div>
+
+    <script src="atividade4.js"></script>
+
+</body>
+
+</html>
