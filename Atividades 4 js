@@ -1,0 +1,214 @@
+
+
+const status = document.getElementById("status");
+const resultado = document.getElementById("resultado");
+
+const mostrarTodos = document.getElementById("mostrarTodos");
+const mostrarFavoritos = document.getElementById("mostrarFavoritos");
+
+
+const CHAVE_POKEDEX = "minhaPokedex";
+const CHAVE_FAVORITOS = "favoritos";
+
+
+let pokedex = [];
+
+
+let favoritos = JSON.parse(
+    localStorage.getItem(CHAVE_FAVORITOS) || "[]"
+);
+
+
+async function carregarPokedex() {
+
+    
+    const dadosSalvos = localStorage.getItem(CHAVE_POKEDEX);
+
+    if (dadosSalvos) {
+
+        pokedex = JSON.parse(dadosSalvos);
+
+        status.textContent = "Pokédex carregada do cache!";
+
+        return pokedex;
+    }
+
+    
+    const resposta = await fetch(
+        "https://pokeapi.co/api/v2/pokemon?limit=30"
+    );
+
+    if (!resposta.ok) {
+        throw new Error("Não foi possível carregar a Pokédex!");
+    }
+
+    const dados = await resposta.json();
+
+    
+    pokedex = await Promise.all(
+        dados.results.map(async (pokemon) => {
+
+            const respostaPokemon = await fetch(pokemon.url);
+
+            if (!respostaPokemon.ok) {
+                throw new Error("Erro ao buscar um Pokémon!");
+            }
+
+            return await respostaPokemon.json();
+
+        })
+    );
+
+    
+    localStorage.setItem(
+        CHAVE_POKEDEX,
+        JSON.stringify(pokedex)
+    );
+
+    status.textContent = "Pokédex carregada e salva no cache!";
+
+    return pokedex;
+}
+
+
+function renderizarLista(lista) {
+
+    resultado.innerHTML = "";
+
+    if (lista.length === 0) {
+
+        resultado.innerHTML = "<p>Nenhum Pokémon encontrado.</p>";
+
+        return;
+    }
+
+    lista.forEach(pokemon => {
+
+        const favorito = favoritos.includes(pokemon.id);
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+
+            <h2>${pokemon.name.toUpperCase()}</h2>
+
+            <img
+                src="${pokemon.sprites.front_default}"
+                alt="${pokemon.name}"
+            >
+
+            <p>
+                <strong>Tipo:</strong>
+                ${pokemon.types.map(t => t.type.name).join(", ")}
+            </p>
+
+            <p>
+                <strong>HP:</strong>
+                ${pokemon.stats[0].base_stat}
+            </p>
+
+            <button class="favoritar">
+                ${favorito ? "❤️ Favoritado" : "🤍 Favoritar"}
+            </button>
+
+        `;
+
+        
+        card.querySelector(".favoritar").addEventListener("click", () => {
+
+            if (favoritos.includes(pokemon.id)) {
+
+                favoritos = favoritos.filter(id => id !== pokemon.id);
+
+            } else {
+
+                favoritos.push(pokemon.id);
+
+            }
+
+            
+            localStorage.setItem(
+                CHAVE_FAVORITOS,
+                JSON.stringify(favoritos)
+            );
+
+            
+            mostrarFavoritosAtivos();
+
+        });
+
+        resultado.appendChild(card);
+
+    });
+
+}
+
+
+function mostrarListaCompleta() {
+
+    renderizarLista(pokedex);
+
+    status.textContent = "Todos os Pokémon";
+
+}
+
+
+function mostrarFavoritosAtivos() {
+
+    const listaFavoritos = pokedex.filter(pokemon =>
+        favoritos.includes(pokemon.id)
+    );
+
+    renderizarLista(listaFavoritos);
+
+    status.textContent = "Seus Pokémon favoritos";
+
+}
+
+
+mostrarTodos.addEventListener("click", () => {
+
+    mostrarListaCompleta();
+
+});
+
+
+mostrarFavoritos.addEventListener("click", () => {
+
+    mostrarFavoritosAtivos();
+
+});
+
+
+async function iniciar() {
+
+    try {
+
+        status.textContent = "Carregando Pokédex...";
+
+        mostrarTodos.disabled = true;
+        mostrarFavoritos.disabled = true;
+
+        const dados = await carregarPokedex();
+
+        renderizarLista(dados);
+
+    } catch (erro) {
+
+        status.textContent = erro.message;
+
+        status.className = "erro";
+
+    } finally {
+
+        mostrarTodos.disabled = false;
+        mostrarFavoritos.disabled = false;
+
+    }
+
+}
+
+
+iniciar();
