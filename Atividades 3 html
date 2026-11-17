@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Montar Time Pokémon</title>
+
+    <link rel="stylesheet" href="atividade3.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Montar Time Pokémon</h1>
+
+        <p>Digite os números de três Pokémon:</p>
+
+        <div class="campos">
+
+            <input type="number" id="id1" placeholder="1º Pokémon" min="1">
+
+            <input type="number" id="id2" placeholder="2º Pokémon" min="1">
+
+            <input type="number" id="id3" placeholder="3º Pokémon" min="1">
+
+        </div>
+
+        <button id="buscar">Montar Time</button>
+
+        <p id="status"></p>
+
+        <div id="resultado"></div>
+
+    </div>
+
+    <script src="atividade3.js"></script>
+
+</body>
+
+</html>
