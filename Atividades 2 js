@@ -1,0 +1,100 @@
+
+
+const pokedex = [
+    { id: 4, nome: "Charmander", tipo: ["fire"] },
+    { id: 5, nome: "Charmeleon", tipo: ["fire"] },
+    { id: 6, nome: "Charizard", tipo: ["fire", "flying"] },
+
+    { id: 7, nome: "Squirtle", tipo: ["water"] },
+    { id: 8, nome: "Wartortle", tipo: ["water"] },
+    { id: 9, nome: "Blastoise", tipo: ["water"] },
+
+    { id: 1, nome: "Bulbasaur", tipo: ["grass", "poison"] },
+    { id: 2, nome: "Ivysaur", tipo: ["grass", "poison"] },
+    { id: 3, nome: "Venusaur", tipo: ["grass", "poison"] },
+
+    { id: 25, nome: "Pikachu", tipo: ["electric"] },
+    { id: 26, nome: "Raichu", tipo: ["electric"] }
+];
+
+
+function* porTipo(lista, tipo) {
+
+    for (const pokemon of lista) {
+
+        if (pokemon.tipo.includes(tipo)) {
+            yield pokemon;
+        }
+
+    }
+
+}
+
+
+const seletor = document.getElementById("seletor");
+const proximo = document.getElementById("proximo");
+const status = document.getElementById("status");
+const resultado = document.getElementById("resultado");
+
+
+let iterador;
+
+
+function iniciarLista() {
+
+    iterador = porTipo(pokedex, seletor.value);
+
+    proximo.disabled = false;
+
+    status.textContent = "Lista pronta! Clique em Próximo.";
+
+    resultado.innerHTML = "";
+
+}
+
+
+seletor.addEventListener("change", () => {
+
+    iniciarLista();
+
+});
+
+
+proximo.addEventListener("click", () => {
+
+    const { value, done } = iterador.next();
+
+    if (done) {
+
+        status.textContent = "Fim da lista!";
+
+        proximo.disabled = true;
+
+        return;
+    }
+
+    status.textContent = "Pokémon encontrado!";
+
+    resultado.innerHTML = `
+
+        <div class="card">
+
+            <h2>${value.nome}</h2>
+
+            <img
+                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${value.id}.png"
+                alt="${value.nome}"
+            >
+
+            <p><strong>Tipo:</strong> ${value.tipo.join(", ")}</p>
+
+            <p><strong>Número:</strong> ${value.id}</p>
+
+        </div>
+
+    `;
+
+});
+
+
+iniciarLista();
