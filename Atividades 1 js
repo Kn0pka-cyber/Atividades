@@ -1,0 +1,96 @@
+
+const campo = document.getElementById("campo");
+const botao = document.getElementById("botao");
+const status = document.getElementById("status");
+const resultado = document.getElementById("resultado");
+
+
+function buscarPokemonCB(id, callback) {
+
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+
+        .then(resposta => {
+
+            if (!resposta.ok) {
+                throw new Error("Pokémon não encontrado!");
+            }
+
+            return resposta.json();
+        })
+
+        .then(pokemon => {
+            callback(null, pokemon);
+        })
+
+        .catch(erro => {
+            callback(erro, null);
+        });
+}
+
+
+botao.addEventListener("click", () => {
+
+    const id = Number(campo.value);
+
+    
+    if (!campo.value || !Number.isInteger(id) || id < 1) {
+
+        status.textContent = "Digite um número válido!";
+        status.className = "erro";
+
+        resultado.innerHTML = "";
+
+        return;
+    }
+
+    
+    status.textContent = "Carregando...";
+    status.className = "";
+
+    resultado.innerHTML = "";
+
+    
+    buscarPokemonCB(id, (erro, pokemon) => {
+
+        
+        if (erro) {
+
+            status.textContent = erro.message;
+            status.className = "erro";
+
+            return;
+        }
+
+        
+        status.textContent = "Pokémon encontrado!";
+
+        const nome = pokemon.name;
+
+        const hp = pokemon.stats[0].base_stat;
+
+        const tipos = pokemon.types
+            .map(tipo => tipo.type.name)
+            .join(", ");
+
+        
+        resultado.innerHTML = `
+
+            <div class="card">
+
+                <h2>${nome.toUpperCase()}</h2>
+
+                <img
+                    src="${pokemon.sprites.front_default}"
+                    alt="${nome}"
+                >
+
+                <p><strong>Tipos:</strong> ${tipos}</p>
+
+                <p><strong>HP:</strong> ${hp}</p>
+
+            </div>
+
+        `;
+    });
+
+});
