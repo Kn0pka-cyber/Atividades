@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Pokémon</title>
+
+    <link rel="stylesheet" href="atividade1.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Buscar Pokémon</h1>
+
+        <input
+            type="number"
+            id="campo"
+            placeholder="Digite o número do Pokémon"
+            min="1"
+        >
+
+        <button id="botao">Buscar</button>
+
+        <p id="status"></p>
+
+        <div id="resultado"></div>
+
+    </div>
+
+    <script src="atividade1.js"></script>
+
+</body>
+</html>
