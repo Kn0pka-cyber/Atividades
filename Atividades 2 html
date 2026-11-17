@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pokedex por Tipo</title>
+
+    <link rel="stylesheet" href="atividade2.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Pokédex por Tipo</h1>
+
+        <label for="seletor">Escolha um tipo:</label>
+
+        <select id="seletor">
+            <option value="fire">Fogo</option>
+            <option value="water">Água</option>
+            <option value="grass">Planta</option>
+            <option value="electric">Elétrico</option>
+        </select>
+
+        <button id="proximo">Próximo</button>
+
+        <p id="status"></p>
+
+        <div id="resultado"></div>
+
+    </div>
+
+    <script src="atividade2.js"></script>
+
+</body>
+
+</html>
