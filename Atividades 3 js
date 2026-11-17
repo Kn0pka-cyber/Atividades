@@ -1,0 +1,115 @@
+
+
+const buscar = document.getElementById("buscar");
+const status = document.getElementById("status");
+const resultado = document.getElementById("resultado");
+
+
+function buscarPokemon(id) {
+
+    return fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+
+        .then(resposta => {
+
+            if (!resposta.ok) {
+                throw new Error(`Pokémon ${id} não encontrado!`);
+            }
+
+            return resposta.json();
+        });
+
+}
+
+
+function esconderCarregando() {
+
+    buscar.disabled = false;
+
+}
+
+
+buscar.addEventListener("click", () => {
+
+    
+    const ids = [
+        document.getElementById("id1").value,
+        document.getElementById("id2").value,
+        document.getElementById("id3").value
+    ].map(Number);
+
+    
+    if (ids.some(id => !Number.isInteger(id) || id < 1)) {
+
+        status.textContent = "Digite três números válidos!";
+        status.className = "erro";
+
+        resultado.innerHTML = "";
+
+        return;
+    }
+
+    
+    status.textContent = "Carregando Pokémon...";
+    status.className = "";
+
+    resultado.innerHTML = "";
+
+    buscar.disabled = true;
+
+    
+    Promise.all(ids.map(buscarPokemon))
+
+        .then(time => {
+
+            status.textContent = "Seu time está pronto!";
+
+            
+            resultado.innerHTML = `
+                <div class="time">
+
+                    ${time.map(pokemon => `
+
+                        <div class="card">
+
+                            <h2>${pokemon.name.toUpperCase()}</h2>
+
+                            <img
+                                src="${pokemon.sprites.front_default}"
+                                alt="${pokemon.name}"
+                            >
+
+                            <p>
+                                <strong>Tipo:</strong>
+                                ${pokemon.types.map(t => t.type.name).join(", ")}
+                            </p>
+
+                            <p>
+                                <strong>HP:</strong>
+                                ${pokemon.stats[0].base_stat}
+                            </p>
+
+                        </div>
+
+                    `).join("")}
+
+                </div>
+            `;
+
+        })
+
+        .catch(erro => {
+
+            status.textContent = erro.message;
+            status.className = "erro";
+
+            resultado.innerHTML = "";
+
+        })
+
+        .finally(() => {
+
+            esconderCarregando();
+
+        });
+
+});
